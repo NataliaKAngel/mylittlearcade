@@ -1,21 +1,18 @@
 extends Node
 
-const UI_LANDSCAPE := "res://ui/UI_Landscape.tscn"
-const UI_PORTRAIT  := "res://ui/UI_Portrait.tscn"
+var current_ui : Node = null
 
-func _ready() -> void:
-	_apply_layout()
+func _ready():
+	# sjekk skjermstørrelse
+	var is_portrait = get_viewport().size.y > get_viewport().size.x
+	if is_portrait:
+		switch_ui("res://ui/UI_Portrait.tscn")
+	else:
+		switch_ui("res://ui/UI_Landscape.tscn")
 
-func _notification(what):
-	if what == NOTIFICATION_WM_SIZE_CHANGED:
-		_apply_layout()
-
-func _apply_layout() -> void:
-	var size = get_viewport().get_visible_rect().size
-	var portrait := size.y > size.x
-	var path := portrait ? UI_PORTRAIT : UI_LANDSCAPE
-
-	# Hvis ingen scene, eller feil scene, bytt.
-	var current := get_tree().current_scene
-	if not current or current.scene_file_path != path:
-		get_tree().change_scene_to_file(path)
+func switch_ui(scene_path: String):
+	if current_ui:
+		current_ui.queue_free()
+	var new_ui = load(scene_path).instantiate()
+	get_tree().root.add_child(new_ui)
+	current_ui = new_ui
