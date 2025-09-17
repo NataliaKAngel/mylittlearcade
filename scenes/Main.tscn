@@ -1,3 +1,8 @@
-[gd_scene format=3 uid="uid://balu4w476odbs"]
+[gd_scene load_steps=2 format=3 uid="uid://balu4w476odbs"]
 
-[node name="Main" type="Node2D"]
+[ext_resource type="Script" path="res://scripts/UIManager.gd" id="1_dl5nk"]
+
+[node name="Main" type="Node"]
+
+[node name="UIManager" type="Node" parent="."]
+script = ExtResource("1_dl5nk")
