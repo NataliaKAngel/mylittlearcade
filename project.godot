@@ -11,19 +11,30 @@ config_version=5
 [application]
 
 config/name="MyLittleArcade"
+run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-UiManager="*res://scripts/UIManager.gd"
+GameState="*res://scripts/GameState.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=6
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[gui]
+
+theme/custom="res://assets/textures/UITheme.tres"
 
 [rendering]
 
