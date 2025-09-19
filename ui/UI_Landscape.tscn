@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://q2nw5htoolf7"]
+[gd_scene load_steps=4 format=3 uid="uid://q2nw5htoolf7"]
 
 [ext_resource type="Texture2D" uid="uid://copnqya75jnhx" path="res://assets/textures/CoinIcon.png" id="1_0j1d1"]
+[ext_resource type="Script" path="res://scripts/UIMain.gd" id="1_rauij"]
 [ext_resource type="Texture2D" uid="uid://df47cpddwul5g" path="res://assets/textures/GemIcon.png" id="2_11o3m"]
 
 [node name="Control" type="Control"]
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_rauij")
 
 [node name="Bg" type="ColorRect" parent="."]
 visible = false
@@ -91,7 +93,7 @@ texture = ExtResource("1_0j1d1")
 expand_mode = 4
 stretch_mode = 6
 
-[node name="CainLabel" type="Label" parent="TopHUD/TopRow/CurrencyGroup"]
+[node name="CoinLabel" type="Label" parent="TopHUD/TopRow/CurrencyGroup"]
 layout_mode = 2
 text = "12,345"
 

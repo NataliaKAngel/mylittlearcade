@@ -1,8 +1,15 @@
-[gd_scene format=3 uid="uid://qnh0hk1jdbnw"]
+[gd_scene load_steps=3 format=3 uid="uid://qnh0hk1jdbnw"]
 
-[node name="GachaMachine" type="Node"]
+[ext_resource type="Script" path="res://scripts/GachaMachine.gd" id="1_bu8qy"]
+[ext_resource type="Script" path="res://scripts/BallCanvas.gd" id="2_cadym"]
+
+[node name="GachaMachine" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_bu8qy")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -31,6 +38,7 @@ position = Vector2(30, 30)
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("2_cadym")
 
 [node name="HintLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2

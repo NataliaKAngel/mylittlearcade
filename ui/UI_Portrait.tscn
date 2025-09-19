@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://b84oi42mf1dlq"]
+[gd_scene load_steps=4 format=3 uid="uid://b84oi42mf1dlq"]
+
+[ext_resource type="Script" path="res://scripts/UIMain.gd" id="1_jg362"]
+[ext_resource type="Texture2D" uid="uid://copnqya75jnhx" path="res://assets/textures/CoinIcon.png" id="2_jdg4b"]
+[ext_resource type="Texture2D" uid="uid://df47cpddwul5g" path="res://assets/textures/GemIcon.png" id="3_6vgpy"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -7,9 +11,139 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_jg362")
 
-[node name="Label" type="Label" parent="."]
+[node name="Bg" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Bg"]
+modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
-text = "PORTRAIT WIP"
+text = "LANDSCAPE"
+
+[node name="CenterArea" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterVBox" type="VBoxContainer" parent="CenterArea"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterArea/CenterVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Frog Monkey"
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CenterArea/CenterVBox"]
+custom_minimum_size = Vector2(640, 420)
+layout_mode = 2
+expand_mode = 3
+stretch_mode = 5
+
+[node name="RarityRow" type="HBoxContainer" parent="CenterArea/CenterVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="StarLabel" type="Label" parent="CenterArea/CenterVBox/RarityRow"]
+layout_mode = 2
+text = "★ ★ ★ ★ ★"
+
+[node name="RarityLabel" type="Label" parent="CenterArea/CenterVBox/RarityRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "EPIC"
+
+[node name="TopHUD" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="TopRow" type="HBoxContainer" parent="TopHUD"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CurrencyGroup" type="HBoxContainer" parent="TopHUD/TopRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CoinIcon" type="TextureRect" parent="TopHUD/TopRow/CurrencyGroup"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+texture = ExtResource("2_jdg4b")
+expand_mode = 4
+stretch_mode = 6
+
+[node name="CoinLabel" type="Label" parent="TopHUD/TopRow/CurrencyGroup"]
+layout_mode = 2
+text = "12,345"
+
+[node name="GemIcon" type="TextureRect" parent="TopHUD/TopRow/CurrencyGroup"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+texture = ExtResource("3_6vgpy")
+expand_mode = 4
+stretch_mode = 6
+
+[node name="GemLabel" type="Label" parent="TopHUD/TopRow/CurrencyGroup"]
+layout_mode = 2
+text = "999"
+
+[node name="Control" type="Control" parent="TopHUD/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="TopHUD/TopRow"]
+layout_mode = 2
+text = "Pause"
+
+[node name="BottomBar" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="BottomRow" type="HBoxContainer" parent="BottomBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="SpinAgain" type="Button" parent="BottomBar/BottomRow"]
+custom_minimum_size = Vector2(200, 56)
+layout_mode = 2
+text = "Spin Again"
+
+[node name="BottomSpacer" type="Control" parent="BottomBar/BottomRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OKButton" type="Button" parent="BottomBar/BottomRow"]
+custom_minimum_size = Vector2(120, 56)
+layout_mode = 2
+text = "OK"

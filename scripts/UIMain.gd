@@ -2,11 +2,11 @@ extends Control
 
 const GACHA_SCENE := preload("res://scenes/GachaMachine.tscn")
 
-@onready var center_area: Control = %CenterArea
-@onready var spin_btn: Button = %SpinAgain
-@onready var ok_btn: Button = %OKButton
-@onready var coin_label: Label = %CoinLabel
-@onready var gem_label: Label = %GemLabel
+@onready var center_area: Control = $CenterArea
+@onready var spin_btn: Button    = $BottomBar/BottomRow/SpinAgain
+@onready var ok_btn: Button      = $BottomBar/BottomRow/OKButton
+@onready var coin_label: Label   = $TopHUD/TopRow/CurrencyGroup/CoinLabel
+@onready var gem_label: Label    = $TopHUD/TopRow/CurrencyGroup/GemLabel
 
 var gacha: Node = null
 

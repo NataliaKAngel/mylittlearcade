@@ -1,122 +1,59 @@
-extends Control
+extends Node
 
-signal spin_started
-signal ball_dropped(item_id: String)
-signal empty_machine
+signal coins_changed(value: int)
+signal pool_changed(remaining: int)
+signal item_revealed(item_id: String)
 
-@onready var machine_panel: Panel      = %MachinePanel
-@onready var balls2d: Node2D           = %Balls2D
-@onready var chute: Marker2D           = %ChutePos
-@onready var hint: Label               = %HintLabel
-@onready var ball_canvas: Control      = %BallCanvas  # har BallCanvas.gd
+@export var starting_coins: int = 1000
+@export var spin_cost: int = 100
+@export var copies_per_item: int = 10  # ← 10 kopier av hver figur
 
-var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
-var _ball_nodes: Array[Node2D] = []   # 👈 viktig: typed array
-var _busy: bool = false
+# Baseliste med de 6 figurene dine
+const BASE_ITEMS: Array[String] = [
+	"frog_monkey_common",
+	"raccon_monkey_common",
+	"fox_monkey_common",
+	"hedgehog__monkey_common",
+	"chiken_monkey_common",
+	"bunny_monkey_common",
+]
+
+var coins: int
+var inventory: Array[String] = []
+var pool: Array[String] = []
+var _rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
 	_rng.randomize()
+	coins = starting_coins
+	_reset_pool()
+	emit_signal("coins_changed", coins)
+	emit_signal("pool_changed", pool_remaining())
 
-	hint.text = "Insert %d coins and SPIN!" % GameState.spin_cost
+func _reset_pool() -> void:
+	pool.clear()
+	for id in BASE_ITEMS:
+		for i in copies_per_item:
+			pool.append(id)
+	pool.shuffle()  # tilfeldig rekkefølge på ballene
 
-	# sørg for at BallCanvas har script og peker hit som provider
-	if ball_canvas.get_script() == null:
-		ball_canvas.set_script(preload("res://scripts/BallCanvas.gd"))
-	ball_canvas.set("provider", self)
+func can_spin() -> bool:
+	return coins >= spin_cost and pool.size() > 0
 
-	_build_placeholder_balls(GameState.pool_remaining())
-	GameState.pool_changed.connect(_on_pool_changed)
+func spin() -> String:
+	if not can_spin():
+		return ""
+	coins -= spin_cost
+	emit_signal("coins_changed", coins)
 
-func _on_pool_changed(left: int) -> void:
-	_sync_ball_count(left)
+	var idx := _rng.randi_range(0, pool.size() - 1)
+	var item_id := pool[idx]
+	pool.remove_at(idx)
+	inventory.append(item_id)
 
-func _build_placeholder_balls(n: int) -> void:
-	if is_instance_valid(balls2d):
-		balls2d.queue_free()
-	balls2d = Node2D.new()
-	balls2d.name = "Balls2D"
-	machine_panel.add_child(balls2d)
+	emit_signal("pool_changed", pool_remaining())
+	emit_signal("item_revealed", item_id)
+	return item_id
 
-	_ball_nodes.clear()
-
-	# område inni maskinen – justér når du har grafikk
-	var rect := Rect2(Vector2(40, 40), Vector2(480, 300))
-
-	for i in n:
-		var dot := Node2D.new()
-		dot.position = Vector2(
-			rect.position.x + _rng.randf() * rect.size.x,
-			rect.position.y + _rng.randf() * rect.size.y
-		)
-		dot.set_meta("color", Color.from_hsv(_rng.randf(), 0.6, 1.0))
-		balls2d.add_child(dot)
-		_ball_nodes.append(dot)
-
-	ball_canvas.queue_redraw()
-
-func _sync_ball_count(n: int) -> void:
-	var curr: int = _ball_nodes.size()
-	if n < curr:
-		var diff: int = curr - n
-		for i in diff:
-			var nd: Node2D = _ball_nodes.pop_back() as Node2D  # 👈 typed pop
-			if is_instance_valid(nd):
-				nd.queue_free()
-		ball_canvas.queue_redraw()
-	elif n > curr:
-		_build_placeholder_balls(n)
-
-func _process(_delta: float) -> void:
-	# liten idle-sway
-	var t: float = Time.get_ticks_msec() / 1000.0
-	for i in _ball_nodes.size():
-		var nd: Node2D = _ball_nodes[i]
-		nd.position.x += sin(t * 2.0 + float(i)) * 0.08
-		nd.position.y += cos(t * 1.7 + float(i)) * 0.08
-	ball_canvas.queue_redraw()
-
-func play_spin() -> void:
-	if _busy:
-		return
-	if not GameState.can_spin():
-		if GameState.pool_remaining() == 0:
-			emit_signal("empty_machine")
-		return
-
-	_busy = true
-	emit_signal("spin_started")
-
-	await _shake(0.5, 8.0)
-
-	var item_id: String = GameState.spin()
-
-	await _drop_one()
-
-	emit_signal("ball_dropped", item_id)
-	_busy = false
-
-func _shake(duration: float, amp: float) -> void:
-	var tween := get_tree().create_tween()
-	tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var orig: Vector2 = machine_panel.position
-	var steps: int = int(duration / 0.05)
-	for i in steps:
-		var off := Vector2(
-			_rng.randf_range(-amp, amp),
-			_rng.randf_range(-amp, amp)
-		)
-		tween.tween_property(machine_panel, "position", orig + off, 0.05)
-	tween.tween_property(machine_panel, "position", orig, 0.05)
-	await tween.finished
-
-func _drop_one() -> void:
-	if _ball_nodes.is_empty():
-		return
-	var node: Node2D = _ball_nodes.pop_back() as Node2D
-	var tween := get_tree().create_tween()
-	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(node, "global_position", chute.global_position, 0.45)
-	await tween.finished
-	if is_instance_valid(node):
-		node.queue_free()
-	ball_canvas.queue_redraw()
+func pool_remaining() -> int:
+	return pool.size()
