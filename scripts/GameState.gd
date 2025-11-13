@@ -13,7 +13,7 @@ const BASE_ITEMS: Array[String] = [
 	"frog_monkey_common",
 	"raccon_monkey_common",
 	"fox_monkey_common",
-	"hedgehog__monkey_common",
+	"hedgehog_monkey_common",
 	"chiken_monkey_common",
 	"bunny_monkey_common",
 ]

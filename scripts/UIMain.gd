@@ -10,6 +10,17 @@ const GACHA_SCENE := preload("res://scenes/GachaMachine.tscn")
 
 var gacha: Node = null
 
+const RARITIES := ["common", "rare", "epic", "legendary"]
+
+func _pretty_item_name(id: String) -> String:
+	var parts := id.split("_")
+	if parts.size() > 0 and parts[-1] in RARITIES:
+		parts.remove_at(parts.size() - 1)   # fjern rarity-suffiks
+	for i in parts.size():
+		if parts[i].length() > 0:
+			parts[i] = parts[i][0].to_upper() + parts[i].substr(1)
+	return " ".join(parts)
+
 func _ready() -> void:
 	# Instance GachaMachine inn i CenterArea
 	gacha = GACHA_SCENE.instantiate()
@@ -41,10 +52,10 @@ func _on_spin_started() -> void:
 	pass
 
 func _on_ball_dropped(item_id: String) -> void:
-	# Vis reveal i maskinens HintLabel
-	var hint: Label = gacha.get_node("%HintLabel")
+	# bruk eksplisitt sti (matcher scene-treet ditt)
+	var hint: Label = gacha.get_node("CenterContainer/VBoxContainer/HintLabel")
 	if hint:
-		hint.text = "You got: %s" % item_id
+		hint.text = "You got: %s" % _pretty_item_name(item_id)
 
 	spin_btn.visible = false
 	ok_btn.visible = true

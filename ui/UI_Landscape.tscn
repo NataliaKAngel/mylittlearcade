@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://q2nw5htoolf7"]
 
-[ext_resource type="Texture2D" uid="uid://copnqya75jnhx" path="res://assets/textures/CoinIcon.png" id="1_0j1d1"]
+[ext_resource type="Texture2D" uid="uid://copnqya75jnhx" path="res://assets/textures/ui/CoinIcon.png" id="1_0j1d1"]
 [ext_resource type="Script" path="res://scripts/UIMain.gd" id="1_rauij"]
-[ext_resource type="Texture2D" uid="uid://df47cpddwul5g" path="res://assets/textures/GemIcon.png" id="2_11o3m"]
+[ext_resource type="Texture2D" uid="uid://df47cpddwul5g" path="res://assets/textures/ui/GemIcon.png" id="2_11o3m"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
