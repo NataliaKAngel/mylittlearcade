@@ -4,8 +4,14 @@
 [ext_resource type="Script" path="res://scripts/BallCanvas.gd" id="2_cadym"]
 
 [node name="GachaMachine" type="Control"]
+z_index = 100
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_bu8qy")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -15,6 +21,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Overlay" type="Control" parent="CenterContainer"]
+z_index = 100
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RevealImage" type="TextureRect" parent="CenterContainer/Overlay"]
+z_index = 10
+custom_minimum_size = Vector2(360, 360)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 5
+stretch_mode = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2

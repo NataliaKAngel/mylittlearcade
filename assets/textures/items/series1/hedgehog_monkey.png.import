@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://4w8cokdudthb"
-path="res://.godot/imported/monkey_fox_test_sprite.png-79c163d156d110463b8a99d0a3e98e20.ctex"
+uid="uid://cv0eey86qa5sf"
+path="res://.godot/imported/hedgehog_monkey.png-1a536e927b4aa9a0c96a2e665817cef8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/items/series1/monkey_fox_test_sprite.png"
-dest_files=["res://.godot/imported/monkey_fox_test_sprite.png-79c163d156d110463b8a99d0a3e98e20.ctex"]
+source_file="res://assets/textures/items/series1/hedgehog_monkey.png"
+dest_files=["res://.godot/imported/hedgehog_monkey.png-1a536e927b4aa9a0c96a2e665817cef8.ctex"]
 
 [params]
 
