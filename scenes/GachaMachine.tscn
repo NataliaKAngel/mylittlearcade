@@ -74,10 +74,10 @@ offset_bottom = 283.0
 script = ExtResource("2_cadym")
 
 [node name="WindowTL" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(210, 88)
+position = Vector2(196, 95)
 
 [node name="WindowBR" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(374, 200)
+position = Vector2(356, 203)
 
 [node name="HintLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2

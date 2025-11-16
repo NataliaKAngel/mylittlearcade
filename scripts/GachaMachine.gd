@@ -50,8 +50,8 @@ func _ready() -> void:
 	_build_placeholder_balls(GameState.pool_remaining())
 
 	# Keep visual count in sync with pool changes
-	if GameState.has_signal("pool_changed"):
-		GameState.pool_changed.connect(_on_pool_changed)
+#	if GameState.has_signal("pool_changed"):
+		# GameState.pool_changed.connect(_on_pool_changed)
 
 func _window_rect_in_balls_space() -> Rect2:
 	var to_local := balls2d.get_global_transform_with_canvas().affine_inverse()
