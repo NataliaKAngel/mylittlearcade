@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://qnh0hk1jdbnw"]
+[gd_scene load_steps=4 format=3 uid="uid://qnh0hk1jdbnw"]
 
 [ext_resource type="Script" path="res://scripts/GachaMachine.gd" id="1_bu8qy"]
 [ext_resource type="Script" path="res://scripts/BallCanvas.gd" id="2_cadym"]
+[ext_resource type="Texture2D" uid="uid://d3g5l1eify56f" path="res://assets/textures/gacha/machine_body.png" id="2_v8q0b"]
 
 [node name="GachaMachine" type="Control"]
 z_index = 100
@@ -47,24 +48,39 @@ layout_mode = 2
 custom_minimum_size = Vector2(560, 420)
 layout_mode = 2
 
-[node name="MachineBody" type="ColorRect" parent="CenterContainer/VBoxContainer/MachinePanel"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-color = Color(0.227451, 0.227451, 0.227451, 1)
+[node name="MachineBody" type="TextureRect" parent="CenterContainer/VBoxContainer/MachinePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_v8q0b")
+expand_mode = 3
+stretch_mode = 5
+metadata/_edit_use_anchors_ = true
 
 [node name="Balls2D" type="Node2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
 
 [node name="ChutePos" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(30, 30)
+position = Vector2(332, 296)
 
 [node name="BallCanvas" type="Control" parent="CenterContainer/VBoxContainer/MachinePanel"]
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 310.0
+offset_top = 243.0
+offset_right = 350.0
+offset_bottom = 283.0
 script = ExtResource("2_cadym")
+
+[node name="WindowTL" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
+position = Vector2(210, 88)
+
+[node name="WindowBR" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
+position = Vector2(374, 200)
 
 [node name="HintLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 text = "Insert 100 coins and SPIN!
 "
+horizontal_alignment = 1

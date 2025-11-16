@@ -4,9 +4,9 @@ signal coins_changed(value: int)
 signal pool_changed(remaining: int)
 signal item_revealed(item_id: String)
 
-@export var starting_coins: int = 1000
+@export var starting_coins: int = 1300
 @export var spin_cost: int = 100
-@export var copies_per_item: int = 10  # ← 10 kopier av hver figur
+@export var copies_per_item: int = 2  # ← 10 kopier av hver figur
 
 # Baseliste med de 6 figurene dine
 const BASE_ITEMS: Array[String] = [
