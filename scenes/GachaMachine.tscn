@@ -1,8 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://qnh0hk1jdbnw"]
+[gd_scene load_steps=8 format=3 uid="uid://qnh0hk1jdbnw"]
 
 [ext_resource type="Script" path="res://scripts/GachaMachine.gd" id="1_bu8qy"]
 [ext_resource type="Script" path="res://scripts/BallCanvas.gd" id="2_cadym"]
 [ext_resource type="Texture2D" uid="uid://d3g5l1eify56f" path="res://assets/textures/gacha/machine_body.png" id="2_v8q0b"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_41k2s"]
+size = Vector2(7, 286)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bhs36"]
+size = Vector2(2, 285)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xacrs"]
+size = Vector2(216.5, 3)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c8tkg"]
+size = Vector2(237, 8)
 
 [node name="GachaMachine" type="Control"]
 z_index = 100
@@ -74,10 +86,28 @@ offset_bottom = 283.0
 script = ExtResource("2_cadym")
 
 [node name="WindowTL" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(196, 95)
+position = Vector2(201, 60)
 
 [node name="WindowBR" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(356, 203)
+position = Vector2(370, 196)
+
+[node name="Walls" type="StaticBody2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
+
+[node name="LeftWall" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
+position = Vector2(176.5, 88)
+shape = SubResource("RectangleShape2D_41k2s")
+
+[node name="RigthWall" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
+position = Vector2(390, 87.5)
+shape = SubResource("RectangleShape2D_bhs36")
+
+[node name="Floor" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
+position = Vector2(282.75, 228.5)
+shape = SubResource("RectangleShape2D_xacrs")
+
+[node name="Ceiling" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
+position = Vector2(287, -55)
+shape = SubResource("RectangleShape2D_c8tkg")
 
 [node name="HintLabel" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2

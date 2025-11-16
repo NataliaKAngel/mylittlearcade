@@ -15,6 +15,8 @@ signal empty_machine
 @onready var win_tl: Marker2D = $"CenterContainer/VBoxContainer/MachinePanel/WindowTL"
 @onready var win_br: Marker2D = $"CenterContainer/VBoxContainer/MachinePanel/WindowBR"
 
+const BALL_SCENE := preload("res://scenes/ball_2d.tscn")
+
 const BALL_TEXTURES: Array[Texture2D] = [
 	preload("res://assets/textures/gacha/balls/pink_ball.png"),
 	preload("res://assets/textures/gacha/balls/blue_ball.png"),
@@ -22,11 +24,14 @@ const BALL_TEXTURES: Array[Texture2D] = [
 	preload("res://assets/textures/gacha/balls/yellow_ball.png"),
 ]
 
+var _ball_nodes: Array[RigidBody2D] = []
+
 var _rng := RandomNumberGenerator.new()
-var _ball_nodes: Array[Node2D] = []   # BallCanvas expects this on provider
 var _busy := false
 
 func _ready() -> void:
+	
+	_make_panel_transparent()
 	_rng.randomize()
 	
 	machine_body.texture = load("res://assets/textures/gacha/machine_body.png")
@@ -53,43 +58,69 @@ func _ready() -> void:
 #	if GameState.has_signal("pool_changed"):
 		# GameState.pool_changed.connect(_on_pool_changed)
 
+func _make_panel_transparent() -> void:
+	# Lag en tom stylebox som overskriver standard grå panel-bakgrunn
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0, 0, 0, 0)  # helt transparent
+	machine_panel.add_theme_stylebox_override("panel", sb)
+
+func _on_pool_changed(left: int) -> void:
+	_sync_ball_count(left)
+
 func _window_rect_in_balls_space() -> Rect2:
+	if balls2d == null or win_tl == null or win_br == null:
+		# Fallback om noe er feil
+		return Rect2(Vector2(40, 40), Vector2(480, 300))
 	var to_local := balls2d.get_global_transform_with_canvas().affine_inverse()
 	var tl := to_local * win_tl.global_position
 	var br := to_local * win_br.global_position
 	return Rect2(tl, br - tl)
-	
-func _on_pool_changed(left: int) -> void:
-	_sync_ball_count(left)
 
 func _build_placeholder_balls(n: int) -> void:
-	# Clear existing
+	# Fjern gamle baller
 	for c in balls2d.get_children():
 		c.queue_free()
 	_ball_nodes.clear()
 
-	# Hide the debug circle renderer now that we use sprites
+	# BallCanvas bruker vi ikke lenger nå som vi har sprites
 	if ball_canvas:
 		ball_canvas.visible = false
 
-	# Area inside the machine – tweak to match your art
+	# Område inni maskinvinduet, basert på markerne
 	var rect := _window_rect_in_balls_space()
 
 	for i in n:
-		var spr := Sprite2D.new()
-		spr.texture = BALL_TEXTURES[randi() % BALL_TEXTURES.size()]
-		spr.centered = true
-		
-		# Position randomly inside the rectangle
-		spr.position = Vector2(
+		var ball := BALL_SCENE.instantiate() as RigidBody2D
+		var spr := ball.get_node("Sprite2D") as Sprite2D
+
+		# Tilfeldig texture til ballen
+		if spr:
+			var idx := _rng.randi_range(0, BALL_TEXTURES.size() - 1)
+			spr.texture = BALL_TEXTURES[idx]
+
+		# Tilfeldig posisjon inni vinduet (i balls2d sitt lokale rom)
+		ball.position = Vector2(
 			rect.position.x + _rng.randf() * rect.size.x,
 			rect.position.y + _rng.randf() * rect.size.y
 		)
-		# Scale down if your PNGs are large (adjust to taste)
-		spr.scale = Vector2(0.18, 0.18)   # was 0.35 – tune to taste (0.15–0.2 works well)
 
-		balls2d.add_child(spr)
-		_ball_nodes.append(spr) # Sprite2D is a Node2D, so all existing code still works
+		# Liten random scale-varians
+		if spr:
+			var s := _rng.randf_range(0.16, 0.20)
+			spr.scale = Vector2(s, s)
+			spr.z_as_relative = false
+			# foreløpig fast base-z; vi finjusterer i _process
+			spr.z_index = 10
+
+		# Liten dult så de ikke ligger helt døde
+		var impulse := Vector2(
+			_rng.randf_range(-20.0, 20.0),
+			_rng.randf_range(-10.0, 10.0)
+		)
+		ball.apply_impulse(impulse)
+
+		balls2d.add_child(ball)
+		_ball_nodes.append(ball)
 
 func _sync_ball_count(n: int) -> void:
 	var curr := _ball_nodes.size()
@@ -107,13 +138,15 @@ func _sync_ball_count(n: int) -> void:
 var idle_sway_amp := 0.0  # 0 disables; try 0.08 for subtle sway
 
 func _process(_delta: float) -> void:
-	if idle_sway_amp <= 0.0:
-		return
-	var t := Time.get_ticks_msec() / 1000.0
-	for i in _ball_nodes.size():
-		var nd := _ball_nodes[i]
-		nd.position.x += sin(t * 2.0 + float(i)) * idle_sway_amp
-		nd.position.y += cos(t * 1.7 + float(i)) * (idle_sway_amp * 0.85)
+	for ball in _ball_nodes:
+		if ball == null:
+			continue
+		var spr := ball.get_node_or_null("Sprite2D") as Sprite2D
+		if spr:
+			spr.z_as_relative = false
+			var base := 10
+			var extra := int(ball.global_position.y / 10.0)
+			spr.z_index = base + extra
 
 func play_spin() -> void:
 	if _busy:
@@ -151,12 +184,10 @@ func _shake(duration: float, amp: float) -> void:
 func _drop_one() -> void:
 	if _ball_nodes.is_empty():
 		return
-	var node: Node2D = _ball_nodes.pop_back()
+	var ball: RigidBody2D = _ball_nodes.pop_back()
 	var tween := get_tree().create_tween()
 	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(node, "global_position", chute.global_position, 0.45)
+	tween.tween_property(ball, "global_position", chute.global_position, 0.45)
 	await tween.finished
-	if is_instance_valid(node):
-		node.queue_free()
-	if ball_canvas:
-		ball_canvas.queue_redraw()
+	if is_instance_valid(ball):
+		ball.queue_free()

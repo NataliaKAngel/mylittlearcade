@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c14ngbs711t4e"]
+
+[ext_resource type="Texture2D" uid="uid://byopopa83ke0g" path="res://assets/textures/gacha/balls/pink_ball.png" id="1_gaoem"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jx77u"]
+radius = 22.4722
+
+[node name="Ball2D" type="RigidBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.18, 0.18)
+texture = ExtResource("1_gaoem")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_jx77u")
