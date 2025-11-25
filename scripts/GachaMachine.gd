@@ -15,6 +15,10 @@ signal empty_machine
 @onready var win_tl: Marker2D = $"CenterContainer/VBoxContainer/MachinePanel/WindowTL"
 @onready var win_br: Marker2D = $"CenterContainer/VBoxContainer/MachinePanel/WindowBR"
 
+@onready var drop_mid1: Marker2D = $CenterContainer/VBoxContainer/MachinePanel/DropMid1
+@onready var drop_mid2: Marker2D = $CenterContainer/VBoxContainer/MachinePanel/DropMid2
+
+
 const BALL_SCENE := preload("res://scenes/ball_2d.tscn")
 
 const BALL_TEXTURES: Array[Texture2D] = [
@@ -184,10 +188,74 @@ func _shake(duration: float, amp: float) -> void:
 func _drop_one() -> void:
 	if _ball_nodes.is_empty():
 		return
-	var ball: RigidBody2D = _ball_nodes.pop_back()
+
+	var ball := _pick_bottom_ball()
+	if ball == null:
+		return
+
+	_ball_nodes.erase(ball)
+
 	var tween := get_tree().create_tween()
-	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(ball, "global_position", chute.global_position, 0.45)
+	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+
+	# 1) fra der ballen er → første mellompunkt
+	tween.tween_property(
+		ball,
+		"global_position",
+		drop_mid1.global_position,
+		0.25
+	)
+
+	# 2) videre til andre mellompunkt
+	tween.tween_property(
+		ball,
+		"global_position",
+		drop_mid2.global_position,
+		0.25
+	)
+
+	# 3) ned i chuten (slutten)
+	tween.tween_property(
+		ball,
+		"global_position",
+		chute.global_position,
+		0.35
+	)
+
 	await tween.finished
+
 	if is_instance_valid(ball):
 		ball.queue_free()
+
+	_jiggle_remaining_balls()
+
+func _pick_bottom_ball() -> RigidBody2D:
+	if _ball_nodes.is_empty():
+		return null
+
+	var best := _ball_nodes[0] as RigidBody2D
+	var best_y := best.global_position.y
+
+	for b in _ball_nodes:
+		var rb := b as RigidBody2D
+		if rb.global_position.y > best_y:
+			best = rb
+			best_y = rb.global_position.y
+
+	return best
+
+func _jiggle_remaining_balls() -> void:
+	for b in _ball_nodes:
+		var rb := b as RigidBody2D
+		if rb == null:
+			continue
+
+		# Lite tilfeldig dytt – juster tallene om det blir for mye/lite
+		var impulse := Vector2(
+			_rng.randf_range(-25.0, 25.0),  # sideveis
+			_rng.randf_range(-10.0, 5.0)    # litt opp/ned
+		)
+		rb.apply_impulse(impulse)
+
+		# Eventuelt litt rotasjon:
+		rb.angular_velocity += _rng.randf_range(-2.0, 2.0)

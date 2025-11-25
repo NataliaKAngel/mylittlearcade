@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://d3g5l1eify56f" path="res://assets/textures/gacha/machine_body.png" id="2_v8q0b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_41k2s"]
-size = Vector2(7, 286)
+size = Vector2(14, 286)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bhs36"]
 size = Vector2(2, 285)
@@ -75,7 +75,13 @@ metadata/_edit_use_anchors_ = true
 [node name="Balls2D" type="Node2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
 
 [node name="ChutePos" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(332, 296)
+position = Vector2(332, 289)
+
+[node name="DropMid1" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
+position = Vector2(245, 212)
+
+[node name="DropMid2" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
+position = Vector2(246, 288)
 
 [node name="BallCanvas" type="Control" parent="CenterContainer/VBoxContainer/MachinePanel"]
 anchors_preset = 0
@@ -86,15 +92,15 @@ offset_bottom = 283.0
 script = ExtResource("2_cadym")
 
 [node name="WindowTL" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(201, 60)
+position = Vector2(211, 60)
 
 [node name="WindowBR" type="Marker2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
-position = Vector2(370, 196)
+position = Vector2(360, 178)
 
 [node name="Walls" type="StaticBody2D" parent="CenterContainer/VBoxContainer/MachinePanel"]
 
 [node name="LeftWall" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
-position = Vector2(176.5, 88)
+position = Vector2(180, 88)
 shape = SubResource("RectangleShape2D_41k2s")
 
 [node name="RigthWall" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
@@ -102,7 +108,7 @@ position = Vector2(390, 87.5)
 shape = SubResource("RectangleShape2D_bhs36")
 
 [node name="Floor" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]
-position = Vector2(282.75, 228.5)
+position = Vector2(282.75, 217.5)
 shape = SubResource("RectangleShape2D_xacrs")
 
 [node name="Ceiling" type="CollisionShape2D" parent="CenterContainer/VBoxContainer/MachinePanel/Walls"]

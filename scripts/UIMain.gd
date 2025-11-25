@@ -68,8 +68,11 @@ func _on_spin_started() -> void:
 	pass
 
 func _on_ball_dropped(item_id: String) -> void:
+	# liten dramatisk pause før reveal
+	await get_tree().create_timer(0.6).timeout   # ← juster tallet her
+
 	# text
-	var hint: Label = gacha.get_node("CenterContainer/VBoxContainer/HintLabel")
+	var hint: Label = gacha.get_node("CenterContainer/Overlay/HintLabel")
 	if hint:
 		hint.text = "You got: %s" % _pretty_item_name(item_id)
 
@@ -86,7 +89,6 @@ func _on_ball_dropped(item_id: String) -> void:
 			t.tween_property(img, "modulate:a", 1.0, 0.25)
 			t.parallel().tween_property(img, "scale", Vector2(1, 1), 0.25)
 
-	# buttons
 	spin_btn.visible = false
 	ok_btn.visible = true
 	spin_btn.disabled = false
